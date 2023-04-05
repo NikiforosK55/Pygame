@@ -1,6 +1,6 @@
 import pygame 
 import os
-os.chdir(os.path.dirname(os.path.abspath(file)))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 pygame.init()
 screen = pygame.display.set_mode((1100, 600))
 color = ("#0F83D5")
