@@ -50,7 +50,7 @@ while True:
                     pygame.quit()
                 elif b2 .collidepoint(pygame.mouse.get_pos()):
                     start()
-pygame.display.update()
-pygame.quit()
+                pygame.display.update()
+                pygame.quit()
  
-menu()
+        menu()

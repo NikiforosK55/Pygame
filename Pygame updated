@@ -58,6 +58,6 @@ def menu():
                     pygame.quit()
                 elif b2.collidepoint(pygame.mouse.get_pos()):
                     car()
-                pygame.display.update()
+        pygame.display.update()
 
 menu()
