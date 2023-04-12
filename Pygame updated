@@ -53,7 +53,7 @@ def menu():
                 key_to_start = event.key == pygame.K_s or event.key == pygame.K_RIGHT or event.key == pygame.K_UP
                 if key_to_start:
                     start()
-        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if b1.collidepoint(pygame.mouse.get_pos()):
                     pygame.quit()
                 elif b2.collidepoint(pygame.mouse.get_pos()):
