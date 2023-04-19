@@ -52,5 +52,5 @@ while True:
                     start()
                 pygame.display.update()
                 pygame.quit()
- 
+
         menu()

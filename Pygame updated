@@ -1,4 +1,5 @@
 import pygame
+import pygame
 import os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +25,7 @@ def button(screen, position, text):
 
 def start():
     (width, height) = (1100, 600)
-    screen = pygame.display.set_mode((width, height))
+    display = pygame.display.set_mode((width, height))
     pygame.display.flip()
 
 def car():
