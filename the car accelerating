@@ -1,9 +1,10 @@
 import pygame
 import os
-
+import pygame.mixer
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 pygame.init()
+pygame.mixer.init()
 
 screen = pygame.display.set_mode((1100, 600))
 color = (15, 131, 213)
@@ -50,9 +51,10 @@ def car():
             x = 400
             y = 300
             vel = 0
-            accel = 0.1
-            max_vel = 1
+            accel = 0.3
+            max_vel = 4
             prev_rect = pygame.Rect(x, y, car_object.get_width(), car_object.get_height())
+            sound_playing = False
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -62,7 +64,8 @@ def car():
                 keys = pygame.key.get_pressed()
                 width = 1100
                 height = 600
-                
+                sound = pygame.mixer.Sound('first gear.mp3')
+
                 # BASIC CONTROLS---------------------------------------------------------
 
                 if keys[pygame.K_LEFT] and x > -50:
@@ -75,10 +78,19 @@ def car():
                     vel = min(vel, max_vel)
                     x += vel
 
-                if keys[pygame.K_UP] and y > 0:
+                if keys[pygame.K_UP] and y < 800:
                     vel -= accel
                     vel = max(vel, -max_vel)
                     y += vel 
+                    if not  sound_playing:
+                        sound.play()
+                        sound_playing = True
+                if keys[pygame.K_UP] and  not sound_playing:
+                    sound_playing = False
+
+                if not keys[pygame.K_UP] and sound_playing:
+                    sound.stop()
+                    sound_playing = False
 
                 if keys[pygame.K_DOWN] and y < height - car_object.get_height():
                     vel += accel
