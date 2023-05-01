@@ -1,6 +1,7 @@
 import pygame
 import os
 
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 pygame.init()
 
@@ -49,8 +50,8 @@ def car():
             x = 400
             y = 300
             vel = 0
-            accel = 0.2
-            max_vel = 4
+            accel = 0.1
+            max_vel = 1
             prev_rect = pygame.Rect(x, y, car_object.get_width(), car_object.get_height())
             while True:
                 for event in pygame.event.get():
@@ -59,42 +60,142 @@ def car():
                 screen.blit(car_object, (x,y))
                 pygame.display.update()
                 keys = pygame.key.get_pressed()
-                width = 10
-                height = 10
+                width = 1100
+                height = 600
+                
+                # BASIC CONTROLS---------------------------------------------------------
 
-                if keys[pygame.K_LEFT] and x > 0:
-                    x -= vel
+                if keys[pygame.K_LEFT] and x > -50:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x += vel
 
-                if keys[pygame.K_RIGHT] and x < width - car_object.get_width():
+                if keys[pygame.K_RIGHT] and x <850 and y < 1500:
+                    vel += accel
+                    vel = min(vel, max_vel)
                     x += vel
 
                 if keys[pygame.K_UP] and y > 0:
-                    y -= vel 
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    y += vel 
 
                 if keys[pygame.K_DOWN] and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
                     y += vel
 
+                # CONTROLS WITH THE SPACE BAR--------------------------------------------------
+
                 if keys[pygame.K_SPACE]:
+                    vel_x = 0
+                    vel_y = 0
+                    vel = 0
+                
+                elif keys[pygame.K_RIGHT] and x < 850 and y < 1500:
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x += vel
+                elif keys[pygame.K_DOWN] and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    y += vel
+                elif keys[pygame.K_LEFT] and x > -50:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x += vel
+                elif keys[pygame.K_DOWN] and keys[pygame.K_RIGHT] and x > width - car_object.get_width() and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x += vel
+                    y += vel
+
+                elif keys[pygame.K_DOWN] and keys[pygame.K_LEFT] and x > 0 and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x -= vel
+                    y += vel
+
+                elif keys[pygame.K_UP] and keys[pygame.K_RIGHT] and x < width - car_object.get_width() and y > 0:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x -= vel
+                    y += vel
+                    
+                elif keys[pygame.K_UP] and keys[pygame.K_LEFT] and x < width - car_object.get_width() and y > 0:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x -= vel
+                    y -= vel
+                elif keys[pygame.K_UP] and keys[pygame.K_DOWN] :
                     vel = 0
 
-        # Update the velocity based on acceleration
+                # COMBINED CONTROLS--------------------------------------------------------------------------------------------------------------
+
+                if keys[pygame.K_DOWN] and keys[pygame.K_RIGHT] and x > width - car_object.get_width() and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x += vel
+                    y += vel
+
+                if keys[pygame.K_DOWN] and keys[pygame.K_LEFT] and x < -900 and y < height - car_object.get_height():
+                    vel -= accel
+                    vel = min(vel, max_vel)
+                    x -= vel
+                    y -= vel
+
+                if keys[pygame.K_UP] and keys[pygame.K_RIGHT] and x < width - car_object.get_width() and y > 0:
+                    vel = -accel
+                    vel = max(vel, max_vel)
+                    x += vel
+                    y -= vel
+                    
+                if keys[pygame.K_UP] and keys[pygame.K_LEFT] and x < width - car_object.get_width() and y > -300:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x -= vel
+                    y -= vel
+                if keys[pygame.K_UP] and keys[pygame.K_DOWN] :
+                    vel = 0
+                
+                if vel == max_vel:
+                    vel = 0
+
+
+                # Update the velocity based on acceleration
                 if keys[pygame.K_UP] and vel < max_vel:
                     vel += accel
+                    y += vel
                 elif vel > 0:
                     vel -= accel
-
-        # Update only the rectangle that covers the previous position and the current position of the object
+                elif vel > 0 and keys[pygame.K_SPACE]:
+                    vel = 0
+       
+            
+                # Update only the rectangle that covers the previous position and the current position of the object
                 curr_rect = pygame.Rect(x, y, car_object.get_width(), car_object.get_height())
                 update_rect = prev_rect.union(curr_rect)
                 screen.blit(bg_img, (0,0))
                 screen.blit(car_object, (x,y))
                 pygame.display.update(update_rect)
-
-        # Update the previous position of the object
+                
+                # Update the previous position of the object
                 prev_rect = curr_rect.copy()
-
-        object()
-
+        object()        
+        
+        def Gear():        
+            car_Gear = pygame.image.load("Neutral Gear.png").convert_alpha()
+            car_Gear = pygame.transform.scale(car_Gear, (300, 200))
+            x = 400
+            y = 300
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                screen.blit(car_Gear, (x,y))
+                pygame.display.update()
+        
+        Gear()
 
 def menu():
     """ This is the menu that waits you to click the s key to start """
