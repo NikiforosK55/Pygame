@@ -1,0 +1,233 @@
+import pygame
+import os
+import pygame.mixer
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+pygame.init()
+pygame.mixer.init()
+
+screen = pygame.display.set_mode((1100, 600))
+color = (15, 131, 213)
+screen.fill(color)
+pygame.display.flip()
+
+def button(screen, position, text):
+    font = pygame.font.SysFont("Fantasy", 100)
+    text_render = font.render(text, 1, (255, 0, 0))
+    x, y, w, h = text_render.get_rect()
+    x, y = position
+    pygame.draw.line(screen, (150, 150, 150), (x, y), (x + w , y), 5)
+    pygame.draw.line(screen, (150, 150, 150), (x, y - 2), (x, y + h), 5)
+    pygame.draw.line(screen, (50, 50, 50), (x, y + h), (x + w , y + h), 5)
+    pygame.draw.line(screen, (50, 50, 50), (x + w , y + h), [x + w , y], 5)
+    pygame.draw.rect(screen, (100, 100, 100), (x, y, w , h))
+    return screen.blit(text_render, (x, y))
+
+def start():
+    (width, height) = (1100, 600)
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.flip()
+
+def car():
+
+    (width, height) = (1100, 600)
+    bg_img = pygame.image.load("robert-bye-8dD1XWJ0PYM-unsplash.jpg").convert()
+    bg_img = pygame.transform.scale(bg_img, (width, height))
+    bg_y1 = 0
+    bg_y2 = -height
+    
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        screen.fill(color)
+        screen.blit(bg_img, (0,0))
+        pygame.display.update()
+
+        def object():
+            car_object = pygame.image.load("supercar_paint_3d-removebg-preview.png").convert_alpha()
+            car_object = pygame.transform.scale(car_object, (300, 200))
+            x = 400
+            y = 300
+            vel = 0
+            accel = 0.3
+            max_vel = 4
+            prev_rect = pygame.Rect(x, y, car_object.get_width(), car_object.get_height())
+            sound_playing = False
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                screen.blit(car_object, (x,y))
+                pygame.display.update()
+                keys = pygame.key.get_pressed()
+                width = 1100
+                height = 600
+                sound = pygame.mixer.Sound('first gear.mp3')
+
+                # BASIC CONTROLS---------------------------------------------------------
+
+                if keys[pygame.K_LEFT] and x > -50:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x += vel
+
+                if keys[pygame.K_RIGHT] and x <850 and y < 1500:
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x += vel
+
+                if keys[pygame.K_UP] and y < 800:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    y += vel 
+                    if not  sound_playing:
+                        sound.play()
+                        sound_playing = True
+                if keys[pygame.K_UP] and  not sound_playing:
+                    sound_playing = False
+
+                if not keys[pygame.K_UP] and sound_playing:
+                    sound.stop()
+                    sound_playing = False
+
+                if keys[pygame.K_DOWN] and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    y += vel
+
+                # CONTROLS WITH THE SPACE BAR--------------------------------------------------
+
+                if keys[pygame.K_SPACE]:
+                    vel_x = 0
+                    vel_y = 0
+                    vel = 0
+                
+                elif keys[pygame.K_RIGHT] and x < 850 and y < 1500:
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x += vel
+                elif keys[pygame.K_DOWN] and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    y += vel
+                elif keys[pygame.K_LEFT] and x > -50:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x += vel
+                elif keys[pygame.K_DOWN] and keys[pygame.K_RIGHT] and x > width - car_object.get_width() and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x += vel
+                    y += vel
+
+                elif keys[pygame.K_DOWN] and keys[pygame.K_LEFT] and x > 0 and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x -= vel
+                    y += vel
+
+                elif keys[pygame.K_UP] and keys[pygame.K_RIGHT] and x < width - car_object.get_width() and y > 0:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x -= vel
+                    y += vel
+                    
+                elif keys[pygame.K_UP] and keys[pygame.K_LEFT] and x < width - car_object.get_width() and y > 0:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x -= vel
+                    y -= vel
+                elif keys[pygame.K_UP] and keys[pygame.K_DOWN] :
+                    vel = 0
+
+                # COMBINED CONTROLS--------------------------------------------------------------------------------------------------------------
+
+                if keys[pygame.K_DOWN] and keys[pygame.K_RIGHT] and x > width - car_object.get_width() and y < height - car_object.get_height():
+                    vel += accel
+                    vel = min(vel, max_vel)
+                    x += vel
+                    y += vel
+
+                if keys[pygame.K_DOWN] and keys[pygame.K_LEFT] and x < -900 and y < height - car_object.get_height():
+                    vel -= accel
+                    vel = min(vel, max_vel)
+                    x -= vel
+                    y -= vel
+
+                if keys[pygame.K_UP] and keys[pygame.K_RIGHT] and x < width - car_object.get_width() and y > 0:
+                    vel = -accel
+                    vel = max(vel, max_vel)
+                    x += vel
+                    y -= vel
+                    
+                if keys[pygame.K_UP] and keys[pygame.K_LEFT] and x < width - car_object.get_width() and y > -300:
+                    vel -= accel
+                    vel = max(vel, -max_vel)
+                    x -= vel
+                    y -= vel
+                if keys[pygame.K_UP] and keys[pygame.K_DOWN] :
+                    vel = 0
+                
+                if vel == max_vel:
+                    vel = 0
+
+
+                # Update the velocity based on acceleration
+                if keys[pygame.K_UP] and vel < max_vel:
+                    vel += accel
+                    y += vel
+                elif vel > 0:
+                    vel -= accel
+                elif vel > 0 and keys[pygame.K_SPACE]:
+                    vel = 0
+       
+            
+                # Update only the rectangle that covers the previous position and the current position of the object
+                curr_rect = pygame.Rect(x, y, car_object.get_width(), car_object.get_height())
+                update_rect = prev_rect.union(curr_rect)
+                screen.blit(bg_img, (0,0))
+                screen.blit(car_object, (x,y))
+                pygame.display.update(update_rect)
+                
+                # Update the previous position of the object
+                prev_rect = curr_rect.copy()
+        object()        
+        
+        def Gear():        
+            car_Gear = pygame.image.load("Neutral Gear.png").convert_alpha()
+            car_Gear = pygame.transform.scale(car_Gear, (300, 200))
+            x = 400
+            y = 300
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                screen.blit(car_Gear, (x,y))
+                pygame.display.update()
+        
+        Gear()
+
+def menu():
+    """ This is the menu that waits you to click the s key to start """
+    b1 = button(screen, (300, 300), "Quit")
+    b2 = button(screen, (500, 300), "Start")
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                key_to_start = event.key == pygame.K_s or event.key == pygame.K_RIGHT or event.key == pygame.K_UP
+                if key_to_start:
+                    start()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if b1.collidepoint(pygame.mouse.get_pos()):
+                    pygame.quit()
+                elif b2.collidepoint(pygame.mouse.get_pos()):
+                    car()
+        pygame.display.update()
+
+menu()
